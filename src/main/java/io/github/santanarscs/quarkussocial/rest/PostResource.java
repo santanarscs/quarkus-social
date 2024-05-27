@@ -58,16 +58,18 @@ public class PostResource {
 
   @GET
   public Response listPosts(@PathParam("userId") Long userId, @HeaderParam("followerId") Long followerId) {
-    if(followerId == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("You forgot the header followerId").build();
-    }
     User user = userRepository.findById(userId);
     if (user == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
+
+    if(followerId == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("You forgot the header followerId").build();
+    }
+    
     User follower = userRepository.findById(followerId);
     if(follower == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("Inexistent Follower").build();
+      return Response.status(Response.Status.NOT_FOUND).entity("Inexistent Follower").build();
     }
     boolean follows = followerRepository.follows(follower, user);
 
